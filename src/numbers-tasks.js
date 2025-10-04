@@ -69,7 +69,7 @@ function getAverage(value1, value2) {
  *   (-5,0) (10,-10) => 18.027756377319946
  */
 function getDistanceBetweenPoints(x1, y1, x2, y2) {
-  return ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** (1 / 2);
+  return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
 }
 
 /**
@@ -107,8 +107,8 @@ function getLinearEquationRoot(a, b) {
  */
 function getAngleBetweenVectors(x1, y1, x2, y2) {
   const ab = x1 * x2 + y1 * y2;
-  const a = (x1 ** 2 + y1 ** 2) ** (1 / 2);
-  const b = (x2 ** 2 + y2 ** 2) ** (1 / 2);
+  const a = Math.sqrt(x1 ** 2 + y1 ** 2);
+  const b = Math.sqrt(x2 ** 2 + y2 ** 2);
   const cos = ab / (a * b);
   return Math.acos(cos);
 }
@@ -159,7 +159,7 @@ function parseNumberFromString(value) {
  *   1,2,3   => 3.741657386773941
  */
 function getParallelepipedDiagonal(a, b, c) {
-  return (a ** 2 + b ** 2 + c ** 2) ** (1 / 2);
+  return Math.sqrt(a ** 2 + b ** 2 + c ** 2);
 }
 
 /**
@@ -202,15 +202,12 @@ function roundToPowerOfTen(num, pow) {
  *   17 => true
  */
 function isPrime(n) {
-  let num = n - 1;
-  if (n === 2 || n === 3) {
-    return true;
-  }
-  while (num > 1) {
-    if (n % num === 0) {
-      return false;
-    }
-    num -= 1;
+  if (n <= 1) return false;
+  if (n <= 3) return true;
+  if (n % 2 === 0 || n % 3 === 0) return false;
+
+  for (let i = 5; i * i <= n; i += 6) {
+    if (n % i === 0 || n % (i + 2) === 0) return false;
   }
   return true;
 }
@@ -267,17 +264,17 @@ function getCube(num) {
  *   10 => 55
  */
 function getFibonacciNumber(index) {
-  let k = 0;
-  let i1 = 0;
-  let i2 = 1;
-  const numbers = [0, 1];
-  while (k <= index) {
-    numbers.push(numbers[i1] + numbers[i2]);
-    k += 1;
-    i1 += 1;
-    i2 += 1;
+  if (index === 0) return 0;
+  if (index === 1) return 1;
+
+  let a = 0;
+  let b = 1;
+  for (let i = 2; i <= index; i += 1) {
+    const temp = a + b;
+    a = b;
+    b = temp;
   }
-  return numbers[index];
+  return b;
 }
 
 /**
@@ -292,13 +289,7 @@ function getFibonacciNumber(index) {
  *   1  => 1
  */
 function getSumToN(n) {
-  let res = 0;
-  let num = n;
-  while (num > 0) {
-    res += num;
-    num -= 1;
-  }
-  return res;
+  return (n * (n + 1)) / 2;
 }
 
 /**
@@ -313,12 +304,13 @@ function getSumToN(n) {
  *   5   => 5  // 5
  */
 function getSumOfDigits(num) {
-  let res = 0;
-  const str = String(num).split('');
-  for (let i = 0; i < str.length; i += 1) {
-    res += Number(str[i]);
+  let result = 0;
+  let n = Math.abs(num);
+  while (n > 0) {
+    result += n % 10;
+    n = Math.floor(n / 10);
   }
-  return res;
+  return result;
 }
 
 /**
@@ -333,11 +325,8 @@ function getSumOfDigits(num) {
  *   15  => false
  */
 function isPowerOfTwo(num) {
-  let x = num;
-  while (x >= 4) {
-    x /= 2;
-  }
-  return x % 2 === 0;
+  // eslint-disable-next-line no-bitwise
+  return num > 0 && (num & (num - 1)) === 0;
 }
 
 /**
@@ -615,7 +604,7 @@ function getMaxNumber(firstNumber, secondNumber) {
  * -1, 1 => -1 | 0 | 1
  */
 function getRandomInteger(min, max) {
-  return Math.floor(Math.random() * (max - min) + min);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 /**
@@ -646,15 +635,8 @@ function getHypotenuse(a, b) {
  * 15 => 8
  */
 function getCountOfOddNumbers(number) {
-  let i = Math.abs(number);
-  let res = 0;
-  while (i >= 1) {
-    if (i % 2 === 1) {
-      res += 1;
-    }
-    i -= 1;
-  }
-  return res;
+  const absNumber = Math.abs(number);
+  return Math.ceil(absNumber / 2);
 }
 
 module.exports = {
